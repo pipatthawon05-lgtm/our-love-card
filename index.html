@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Couple ID & Romantic Certificate - บัตรคู่รักไม่มีวันหมดอายุ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@300;400;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        romantic: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            200: '#fecdd3',
+                            300: '#fda4af',
+                            400: '#fb7185',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            700: '#be123c',
+                        }
+                    },
+                    fontFamily: {
+                        prompt: ['Prompt', 'sans-serif'],
+                        cursive: ['Dancing Script', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            background: linear-gradient(135deg, #fce7f3 0%, #ffd1dc 50%, #fbcfe8 100%);
+            min-height: 100vh;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 20px 40px rgba(225, 29, 72, 0.12);
+        }
+
+        .card-gradient-active {
+            background: linear-gradient(135deg, #fff0f5 0%, #ffe4e6 50%, #fecdd3 100%);
+            border: 2px solid #fda4af;
+        }
+
+        .card-gradient-breakup {
+            background: linear-gradient(135deg, #27272a 0%, #18181b 100%);
+            border: 2px solid #52525b;
+            color: #f4f4f5;
+        }
+
+        /* Pulse glowing effects */
+        @keyframes heartGlow {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(244, 63, 94, 0.6)); }
+            50% { transform: scale(1.1); filter: drop-shadow(0 0 25px rgba(244, 63, 94, 0.9)); }
+        }
+
+        .animate-heart-glow {
+            animation: heartGlow 2s infinite ease-in-out;
+        }
+
+        /* Scan line animation */
+        @keyframes scanLine {
+            0% { top: 0%; opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { top: 100%; opacity: 0.8; }
+        }
+
+        .scan-laser {
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #ef4444, #f43f5e, #ef4444, transparent);
+            box-shadow: 0 0 15px #f43f5e, 0 0 8px #f43f5e;
+            animation: scanLine 1.5s ease-in-out infinite alternate;
+        }
+
+        /* Card Tear Animations */
+        .tear-left {
+            clip-path: polygon(0 0, 52% 0, 48% 25%, 53% 50%, 47% 75%, 52% 100%, 0 100%);
+            animation: tearAnimLeft 1.2s forwards cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .tear-right {
+            clip-path: polygon(52% 0, 100% 0, 100% 100%, 52% 100%, 47% 75%, 53% 50%, 48% 25%);
+            animation: tearAnimRight 1.2s forwards cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        @keyframes tearAnimLeft {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(-60px, 30px) rotate(-8deg); opacity: 0.8; }
+        }
+
+        @keyframes tearAnimRight {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(60px, -20px) rotate(8deg); opacity: 0.8; }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #f43f5e;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="p-3 md:p-6 text-slate-800 flex flex-col items-center justify-between min-h-screen">
+
+    <header class="w-full max-w-4xl mx-auto mb-6 flex flex-wrap justify-between items-center gap-4 bg-white/60 backdrop-blur-md p-4 rounded-2xl border border-white/60 shadow-sm">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('proposal')">
+            <div class="w-10 h-10 rounded-full bg-rose-500 text-white flex items-center justify-center text-xl shadow-md shadow-rose-200">
+                <i class="fa-solid font-bold fa-heart"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg text-slate-800 leading-none">Forever Love Card</h1>
+                <p class="text-xs text-rose-500 font-medium">ระบบออกบัตรคู่รักดิจิทัล</p>
+            </div>
+        </div>
+
+        <nav class="flex flex-wrap gap-2 text-xs md:text-sm">
+            <button onclick="switchTab('proposal')" class="nav-btn px-3 py-1.5 rounded-xl bg-rose-500 text-white font-medium shadow-sm transition-all" id="nav-proposal">
+                <i class="fa-solid fa-heart-circle-plus mr-1"></i> ขอเป็นแฟน
+            </button>
+            <button onclick="switchTab('search')" class="nav-btn px-3 py-1.5 rounded-xl bg-white/80 hover:bg-rose-50 text-slate-700 font-medium transition-all" id="nav-search">
+                <i class="fa-solid fa-magnifying-glass mr-1"></i> ค้นหา/ตรวจสอบบัตร
+            </button>
+            <button onclick="switchTab('reconcile')" class="nav-btn px-3 py-1.5 rounded-xl bg-white/80 hover:bg-rose-50 text-slate-700 font-medium transition-all" id="nav-reconcile">
+                <i class="fa-solid fa-handshake-simple mr-1"></i> ขอคืนดี
+            </button>
+        </nav>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="w-full max-w-4xl mx-auto flex-1 flex flex-col justify-center items-center">
+
+        <section id="stage-proposal" class="w-full max-w-lg glass-card p-6 md:p-8 rounded-3xl text-center space-y-6 transition-all duration-300">
+            <div class="relative inline-block my-2">
+                <div class="w-24 h-24 rounded-full bg-rose-100 flex items-center justify-center mx-auto text-4xl text-rose-500 animate-heart-glow">
+                    <i class="fa-solid fa-hand-holding-heart"></i>
+                </div>
+                <span class="absolute -top-1 -right-1 bg-rose-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">Special</span>
+            </div>
+
+            <div class="space-y-2">
+                <h2 class="text-2xl md:text-3xl font-bold text-slate-800" id="proposal-title">ตกลงเป็นแฟนกันนะ? ❤️</h2>
+                <p class="text-slate-600 text-sm md:text-base leading-relaxed" id="proposal-subtitle">
+                    ตั้งแต่วันที่ได้รู้จักเธอ โลกของฉันก็สดใสขึ้นทุกวัน <br/>
+                    ยินดีไหมที่จะเดินร่วมทาง และสร้างความทรงจำดีๆ ไปด้วยกัน?
+                </p>
+            </div>
+
+            <!-- Reaction message box for repeated 'No' clicks -->
+            <div id="no-reaction-box" class="hidden p-3 rounded-2xl bg-rose-100/80 text-rose-700 text-xs md:text-sm font-medium border border-rose-200">
+                <i class="fa-solid fa-face-sad-tear mr-1"></i> <span id="no-reaction-text">คิดดูอีกทีน้าาา...</span>
+            </div>
+
+            <!-- Dynamic Buttons Container -->
+            <div id="proposal-btn-container" class="relative min-h-[160px] flex flex-col md:flex-row items-center justify-center gap-4 pt-4">
+                <button id="btn-yes" onclick="acceptProposal()" class="w-full md:w-auto px-8 py-3.5 bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold rounded-2xl shadow-lg shadow-rose-200 transform active:scale-95 transition-all duration-300 text-base md:text-lg z-10">
+                    เป็นครับ / เป็นค่ะ 💕
+                </button>
+                
+                <button id="btn-no" onclick="handleNoClick()" class="w-full md:w-auto px-6 py-3 bg-slate-200 hover:bg-slate-300 text-slate-600 font-semibold rounded-2xl transform active:scale-95 transition-all duration-300 text-sm md:text-base">
+                    ไม่เป็น 🥺
+                </button>
+            </div>
+            
+            <p class="text-xs text-slate-400">กดตอบตกลงเพื่อเข้าสู่ขั้นตอนสแกนลายนิ้วมือยืนยันความรัก</p>
+        </section>
+
+
+        <section id="stage-fingerprint" class="hidden w-full max-w-lg glass-card p-6 md:p-8 rounded-3xl text-center space-y-6">
+            <div class="space-y-1">
+                <span class="text-xs font-semibold uppercase tracking-wider text-rose-500 bg-rose-100 px-3 py-1 rounded-full">Step 2 of 3</span>
+                <h2 class="text-2xl font-bold text-slate-800">ยืนยันลายนิ้วมือคู่รัก</h2>
+                <p class="text-xs md:text-sm text-slate-500">แตะปุ่มสแกนค้างไว้จนครบ 100% เพื่อยืนยันหัวใจ</p>
+            </div>
+
+            <!-- Fingerprint Hold Element -->
+            <div class="py-4 flex flex-col items-center justify-center">
+                <div id="fingerprint-btn" class="relative w-36 h-36 rounded-full bg-slate-900 border-4 border-rose-300 shadow-xl flex items-center justify-center cursor-pointer select-none overflow-hidden group touch-none">
+                    
+                    <!-- Laser Line -->
+                    <div id="scan-laser" class="scan-laser hidden"></div>
+
+                    <!-- Progress Circular Border Overlay -->
+                    <svg class="absolute inset-0 w-full h-full transform -rotate-90 pointer-events-none" viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="44" stroke="currentColor" stroke-width="6" class="text-slate-800" fill="transparent" />
+                        <circle id="scan-progress-circle" cx="50" cy="50" r="44" stroke="currentColor" stroke-width="6" class="text-rose-500 transition-all duration-75" stroke-dasharray="276.46" stroke-dashoffset="276.46" stroke-linecap="round" fill="transparent" />
+                    </svg>
+
+                    <!-- Icon -->
+                    <i id="fp-icon" class="fa-solid fa-fingerprint text-6xl text-rose-400 transition-all duration-300 group-hover:scale-105"></i>
+                </div>
+
+                <div class="mt-4 text-center">
+                    <div class="text-xl font-bold text-rose-600" id="scan-percentage">0%</div>
+                    <div class="text-xs text-slate-400 mt-0.5" id="scan-status-text">กดค้างไว้ตรงลายนิ้วมือ...</div>
+                </div>
+            </div>
+
+            <!-- Couple Form (Hidden until scan finishes) -->
+            <form id="couple-form" onsubmit="generateCoupleCard(event)" class="hidden space-y-4 text-left border-t border-rose-100 pt-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">ชื่อของคุณ</label>
+                        <input type="text" id="my-name" required placeholder="ชื่อเล่นหรือชื่อจริง" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">ชื่อแฟนของคุณ</label>
+                        <input type="text" id="partner-name" required placeholder="ชื่อเล่นหรือชื่อจริง" class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-400">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">วันที่ตกลงคบกัน</label>
+                        <input type="date" id="date-start" required class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">เวลาที่ตกลงคบกัน</label>
+                        <input type="time" id="time-start" required class="w-full px-3 py-2 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-400">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-xl shadow-md shadow-rose-200 transition-all text-sm">
+                    <i class="fa-solid fa-id-card mr-1"></i> ออกบัตรประจำตัวคู่รักดิจิทัล
+                </button>
+            </form>
+        </section>
+
+
+        <section id="stage-card-result" class="hidden w-full max-w-xl flex flex-col items-center space-y-6">
+            
+            <!-- Controls Above Card -->
+            <div class="w-full flex justify-between items-center text-xs text-slate-500 px-2">
+                <span><i class="fa-solid fa-shield-halved text-emerald-500 mr-1"></i> ยืนยันข้อมูลในระบบแล้ว</span>
+                <button onclick="downloadCardSVG()" class="hover:text-rose-600 font-medium">
+                    <i class="fa-solid fa-download mr-1"></i> บันทึกบัตร
+                </button>
+            </div>
+
+            <!-- ID CARD CONTAINER (Target for html2canvas) -->
+            <div id="couple-card-element" class="w-full rounded-3xl p-6 md:p-8 card-gradient-active shadow-2xl relative overflow-hidden transition-all duration-500">
+                <!-- Decorative Elements -->
+                <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-rose-300/30 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="absolute -left-10 -top-10 w-40 h-40 bg-pink-300/30 rounded-full blur-2xl pointer-events-none"></div>
+
+                <!-- Card Header -->
+                <div class="flex justify-between items-start border-b border-rose-200/80 pb-4 mb-4 relative z-10">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-500 to-pink-400 text-white flex items-center justify-center text-lg shadow-md">
+                            <i class="fa-solid fa-heart"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-bold tracking-widest uppercase text-rose-500">Official Lover ID</span>
+                            <h3 class="font-bold text-slate-800 text-base md:text-lg leading-tight">บัตรประจำตัวคู่รัก</h3>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span id="card-status-badge" class="inline-block px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-300">
+                            ไม่มีวันหมดอายุ
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Card Body -->
+                <div class="space-y-4 relative z-10">
+                    <div>
+                        <span class="text-[10px] uppercase font-semibold text-slate-400">รหัสประจำตัวคู่รัก (COUPLE ID)</span>
+                        <div id="card-id-display" class="font-mono font-bold text-xl md:text-2xl text-rose-600 tracking-wider">
+                            11A1045172026#01
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 bg-white/60 p-3.5 rounded-2xl border border-white/80">
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-medium block">ชื่อคู่รัก 1</span>
+                            <span id="card-name-1" class="font-bold text-slate-700 text-sm md:text-base">--</span>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-400 font-medium block">ชื่อคู่รัก 2</span>
+                            <span id="card-name-2" class="font-bold text-slate-700 text-sm md:text-base">--</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 text-xs text-slate-600">
+                        <div>
+                            <span class="text-[10px] text-slate-400 block">วันที่ตกลงคบกัน</span>
+                            <span id="card-date" class="font-semibold text-slate-700">--</span>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-slate-400 block">เวลาตกลงคบกัน</span>
+                            <span id="card-time" class="font-semibold text-slate-700">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Footer -->
+                <div class="mt-6 pt-3 border-t border-rose-200/60 flex justify-between items-center text-[10px] text-slate-400 relative z-10">
+                    <div>
+                        <span>ออกบัตรโดย: Forever Love Security</span>
+                    </div>
+                    <div id="reconcile-count-tag" class="text-rose-500 font-medium">
+                        โควต้าคืนดีคงเหลือ: 3/3
+                    </div>
+                </div>
+            </div>
+
+            <!-- Breakup & Action Area -->
+            <div class="w-full flex flex-col md:flex-row gap-3 pt-2">
+                <button onclick="shareCard()" class="flex-1 py-2.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl text-xs md:text-sm font-semibold shadow-sm transition-all">
+                    <i class="fa-solid fa-share-nodes mr-1 text-rose-500"></i> แชร์รหัส ID นี้
+                </button>
+                <button onclick="confirmBreakup()" class="py-2.5 px-5 bg-slate-200 hover:bg-rose-100 hover:text-rose-700 text-slate-600 rounded-xl text-xs md:text-sm font-semibold transition-all">
+                    <i class="fa-solid fa-heart-crack mr-1"></i> บอกเลิก / ฉีกบัตร
+                </button>
+            </div>
+        </section>
+
+
+        <section id="stage-search" class="hidden w-full max-w-md glass-card p-6 md:p-8 rounded-3xl text-center space-y-5">
+            <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold text-slate-800">ค้นหาและตรวจสอบบัตรคู่รัก</h2>
+                <p class="text-xs text-slate-500 mt-1">กรอกรหัส ID บัตรเพื่อทำการตรวจสอบข้อมูลในระบบลับ</p>
+            </div>
+
+            <div class="space-y-3 text-left">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">รหัส ID บัตรคู่รัก</label>
+                    <input type="text" id="search-id-input" placeholder="เช่น 11A1045172026#01" class="w-full px-3.5 py-2.5 text-sm font-mono uppercase rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+
+                <div id="search-verification-fields" class="space-y-3 pt-1">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">ยืนยันชื่อคู่รัก (ฝ่ายใดก็ได้)</label>
+                        <input type="text" id="search-name-1" placeholder="ใส่ชื่อของคุณ หรือ ชื่อแฟน" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    </div>
+                </div>
+
+                <button onclick="performSearch()" class="w-full py-3 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl shadow-md transition-all text-sm mt-2">
+                    <i class="fa-solid fa-shield-cat mr-1"></i> ตรวจสอบข้อมูลบัตร
+                </button>
+            </div>
+
+            <div id="search-result-msg" class="hidden text-xs p-3 rounded-xl"></div>
+        </section>
+
+
+        <section id="stage-reconcile" class="hidden w-full max-w-md glass-card p-6 md:p-8 rounded-3xl text-center space-y-5">
+            <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-handshake-angle"></i>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold text-slate-800">ยื่นเรื่องขอคืนดี</h2>
+                <p class="text-xs text-slate-500 mt-1">กรอกรหัส ID บัตรที่เคยบอกเลิก เพื่อออกบัตรใบใหม่ (จำกัด 3 ครั้ง)</p>
+            </div>
+
+            <form onsubmit="handleReconciliation(event)" class="space-y-3 text-left">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">รหัส ID บัตรเดิมที่เคยบอกเลิก</label>
+                    <input type="text" id="reconcile-id" required placeholder="เช่น 11A1045172026#01" class="w-full px-3.5 py-2.5 text-sm font-mono uppercase rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">ชื่อของคุณ</label>
+                        <input type="text" id="reconcile-name-1" required placeholder="ชื่อเดิม" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">ชื่อแฟน</label>
+                        <input type="text" id="reconcile-name-2" required placeholder="ชื่อเดิม" class="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow-md shadow-amber-200 transition-all text-sm mt-2">
+                    <i class="fa-solid fa-heart-circle-bolt mr-1"></i> ยืนยันการขอคืนดี
+                </button>
+            </form>
+
+            <div id="reconcile-status-msg" class="hidden text-xs p-3 rounded-xl"></div>
+        </section>
+
+    </main>
+
+    <div id="breakup-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="w-full max-w-lg bg-zinc-900 text-zinc-100 p-6 md:p-8 rounded-3xl shadow-2xl border border-zinc-800 text-center space-y-6 relative overflow-hidden">
+            
+            <div id="tear-animation-container" class="relative min-h-[220px] flex items-center justify-center">
+                <!-- Tearable Mock Visual -->
+                <div id="tear-left-part" class="absolute inset-0 bg-rose-100 text-slate-800 p-6 rounded-2xl flex flex-col justify-between tear-left border border-rose-300">
+                    <div class="font-bold text-left text-xs text-rose-500">OFFICIAL LOVER ID</div>
+                    <div class="text-left font-mono font-bold text-lg" id="tear-id-1">ID CARD</div>
+                    <div class="text-left text-xs text-slate-500">ความทรงจำคู่รัก...</div>
+                </div>
+                <div id="tear-right-part" class="absolute inset-0 bg-rose-100 text-slate-800 p-6 rounded-2xl flex flex-col justify-between tear-right border border-rose-300">
+                    <div class="font-bold text-right text-xs text-rose-500">FOREVER LOVE</div>
+                    <div class="text-right font-mono font-bold text-lg" id="tear-id-2">ID CARD</div>
+                    <div class="text-right text-xs text-slate-500">...สิ้นสุดการเดินทาง</div>
+                </div>
+            </div>
+
+            <!-- Monochromatic Certificate (After Tear) -->
+            <div id="breakup-certificate" class="hidden space-y-4 border border-zinc-700 p-5 rounded-2xl bg-zinc-950/80 text-left">
+                <div class="flex justify-between items-center border-b border-zinc-800 pb-3">
+                    <span class="text-xs font-mono text-zinc-400" id="breakup-cert-id">ID: ----</span>
+                    <span class="text-[10px] bg-zinc-800 text-zinc-300 px-2.5 py-0.5 rounded-full">เอกสารสิ้นสุดความสัมพันธ์</span>
+                </div>
+                <div class="space-y-2">
+                    <h3 class="text-lg font-bold text-zinc-100">หนังสือยืนยันการเลิกกัน (Breakup Certificate)</h3>
+                    <p class="text-xs text-zinc-400 leading-relaxed">
+                        ขอให้ทั้งคู่ต่างแยกย้ายกันไปเติบโตตามทางเดินของตัวเอง ขอบคุณสำหรับทุกช่วงเวลาดีๆ และความทรงจำอันงดงามที่เคยมีร่วมกันตลอดเวลาที่ผ่านมา
+                    </p>
+                </div>
+                <div class="text-[11px] text-zinc-500 pt-2 border-t border-zinc-800/80 flex justify-between">
+                    <span>วันที่ยกเลิกบัตร: <span id="breakup-date">--</span></span>
+                    <span>สถานะ: เลิกกันแล้ว</span>
+                </div>
+            </div>
+
+            <div class="flex gap-3 justify-center pt-2">
+                <button id="btn-close-breakup" onclick="closeBreakupModal()" class="px-6 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs md:text-sm font-semibold rounded-xl transition-all">
+                    ปิดหน้าต่าง
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Footer -->
+    <footer class="w-full max-w-4xl mx-auto mt-8 text-center text-xs text-slate-500 py-3">
+        Forever Love Security & Encrypted Couple Registry System &copy; 2026 by mumu_apr200x
+    </footer>
+
+
+    <script>
+        /* =============================================================
+           STATE MANAGEMENT & ENCRYPTED STORAGE HELPERS
+           ============================================================= */
+        const STORAGE_KEY = 'encrypted_couple_db_v1';
+        let noCount = 0;
+        let isScanning = false;
+        let scanProgress = 0;
+        let scanTimer = null;
+        let activeCardData = null;
+
+        // No button reaction phrases
+        const noPhrases = [
+            "แน่ใจเหรอครับ? คิดดูดีๆ อีกทีนะ 🥺",
+            "เค้าเสียใจนะ... ลองกดดูใหม่ซิ! 💔",
+            "อย่าใจร้ายเลยนะขอร้องงง 🙏",
+            "ปุ่มไม่เป็นจะเล็กลงแล้วน้าาา!",
+            "ยอมเป็นแฟนเหอะนะ น้าาาา! 🥰",
+            "กดเป็นเหอะ รับรองจะดูแลอย่างดี!",
+            "อีกนิดเดียวก็ปุ่มไม่เป็นจะหายแล้ว!",
+            "ฮั่นแน่! ไม่มีทางเลือกอื่นแล้วล่ะ! ❤️"
+        ];
+
+        // Encrypted Obfuscation Helper (Base64 + XOR Cipher for Local Security)
+        const EncryptedDB = {
+            _key: 'RomanticLoveKey2026',
+            _xor(str) {
+                let result = '';
+                for (let i = 0; i < str.length; i++) {
+                    result += String.fromCharCode(str.charCodeAt(i) ^ this._key.charCodeAt(i % this._key.length));
+                }
+                return result;
+            },
+            encrypt(data) {
+                try {
+                    const json = JSON.stringify(data);
+                    const xored = this._xor(json);
+                    return btoa(encodeURIComponent(xored));
+                } catch (e) {
+                    console.error("Encryption error", e);
+                    return null;
+                }
+            },
+            decrypt(cipher) {
+                try {
+                    const xored = decodeURIComponent(atob(cipher));
+                    const json = this._xor(xored);
+                    return JSON.parse(json);
+                } catch (e) {
+                    return null;
+                }
+            },
+            getDB() {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return { couples: [], globalCounter: 1, currentSetIndex: 0 };
+                return this.decrypt(raw) || { couples: [], globalCounter: 1, currentSetIndex: 0 };
+            },
+            saveDB(db) {
+                const cipher = this.encrypt(db);
+                if (cipher) localStorage.setItem(STORAGE_KEY, cipher);
+            }
+        };
+
+        // Initialize defaults
+        window.addEventListener('DOMContentLoaded', () => {
+            // Set default date/time fields to now (11 Oct 2026 fallback or real date)
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            const hh = String(today.getHours()).padStart(2, '0');
+            const min = String(today.getMinutes()).padStart(2, '0');
+
+            document.getElementById('date-start').value = `${yyyy}-${mm}-${dd}`;
+            document.getElementById('time-start').value = `${hh}:${min}`;
+
+            setupFingerprintScanner();
+        });
+
+
+        function switchTab(tab) {
+            document.getElementById('stage-proposal').classList.add('hidden');
+            document.getElementById('stage-fingerprint').classList.add('hidden');
+            document.getElementById('stage-card-result').classList.add('hidden');
+            document.getElementById('stage-search').classList.add('hidden');
+            document.getElementById('stage-reconcile').classList.add('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.className = 'nav-btn px-3 py-1.5 rounded-xl bg-white/80 hover:bg-rose-50 text-slate-700 font-medium transition-all';
+            });
+
+            if (tab === 'proposal') {
+                document.getElementById('stage-proposal').classList.remove('hidden');
+                document.getElementById('nav-proposal').className = 'nav-btn px-3 py-1.5 rounded-xl bg-rose-500 text-white font-medium shadow-sm transition-all';
+            } else if (tab === 'search') {
+                document.getElementById('stage-search').classList.remove('hidden');
+                document.getElementById('nav-search').className = 'nav-btn px-3 py-1.5 rounded-xl bg-rose-500 text-white font-medium shadow-sm transition-all';
+            } else if (tab === 'reconcile') {
+                document.getElementById('stage-reconcile').classList.remove('hidden');
+                document.getElementById('nav-reconcile').className = 'nav-btn px-3 py-1.5 rounded-xl bg-rose-500 text-white font-medium shadow-sm transition-all';
+            }
+        }
+
+
+        function handleNoClick() {
+            noCount++;
+            const btnYes = document.getElementById('btn-yes');
+            const btnNo = document.getElementById('btn-no');
+            const reactionBox = document.getElementById('no-reaction-box');
+            const reactionText = document.getElementById('no-reaction-text');
+
+            reactionBox.classList.remove('hidden');
+            reactionText.innerText = noPhrases[Math.min(noCount - 1, noPhrases.length - 1)];
+
+            // Grow YES button
+            const yesScale = 1 + (noCount * 0.22);
+            btnYes.style.transform = `scale(${yesScale})`;
+
+            // Shrink NO button
+            const noScale = Math.max(0.2, 1 - (noCount * 0.12));
+            btnNo.style.transform = `scale(${noScale})`;
+
+            // After 8 attempts, remove NO button completely
+            if (noCount >= 8) {
+                btnNo.style.display = 'none';
+                btnYes.className = 'w-full py-6 bg-gradient-to-r from-rose-500 via-pink-500 to-rose-600 text-white font-bold rounded-3xl shadow-2xl text-2xl animate-bounce z-10';
+                btnYes.innerHTML = 'เป็นครับ! ❤️ (ไม่มีปุ่มให้ปฏิเสธแล้วน้า)';
+                document.getElementById('proposal-title').innerText = 'ยอมจำนนด้วยหัวใจ! 🥰';
+                document.getElementById('proposal-subtitle').innerText = 'กดปุ่มสีชมพูตรงกลางเพื่อยืนยันลายนิ้วมือรับบัตรได้เลย';
+            }
+        }
+
+        function acceptProposal() {
+            document.getElementById('stage-proposal').classList.add('hidden');
+            document.getElementById('stage-fingerprint').classList.remove('hidden');
+        }
+
+
+        function setupFingerprintScanner() {
+            const fpBtn = document.getElementById('fingerprint-btn');
+            const laser = document.getElementById('scan-laser');
+            const circle = document.getElementById('scan-progress-circle');
+            const percentageText = document.getElementById('scan-percentage');
+            const statusText = document.getElementById('scan-status-text');
+            const fpIcon = document.getElementById('fp-icon');
+
+            const startScan = (e) => {
+                e.preventDefault();
+                isScanning = true;
+                laser.classList.remove('hidden');
+                fpIcon.classList.add('text-rose-500', 'scale-110');
+                statusText.innerText = 'กำลังสแกนลายนิ้วมือ... อย่าเพิ่งปล่อย';
+
+                scanTimer = setInterval(() => {
+                    if (!isScanning) return;
+                    scanProgress += 4;
+                    if (scanProgress > 100) scanProgress = 100;
+
+                    // Update UI circle (Max offset ~276.46)
+                    const offset = 276.46 - (276.46 * scanProgress / 100);
+                    circle.style.strokeDashoffset = offset;
+                    percentageText.innerText = `${scanProgress}%`;
+
+                    if (scanProgress >= 100) {
+                        stopScan();
+                        completeFingerprintScan();
+                    }
+                }, 50);
+            };
+
+            const stopScan = () => {
+                if (scanProgress < 100) {
+                    scanProgress = 0;
+                    circle.style.strokeDashoffset = 276.46;
+                    percentageText.innerText = '0%';
+                    statusText.innerText = 'สแกนไม่สำเร็จ กดค้างใหม่อีกครั้ง';
+                }
+                isScanning = false;
+                clearInterval(scanTimer);
+                laser.classList.add('hidden');
+                fpIcon.classList.remove('scale-110');
+            };
+
+            // Touch & Mouse Events
+            fpBtn.addEventListener('mousedown', startScan);
+            fpBtn.addEventListener('mouseup', stopScan);
+            fpBtn.addEventListener('mouseleave', stopScan);
+
+            fpBtn.addEventListener('touchstart', startScan);
+            fpBtn.addEventListener('touchend', stopScan);
+        }
+
+        function completeFingerprintScan() {
+            document.getElementById('scan-status-text').innerText = '✓ ยืนยันลายนิ้วมือสำเร็จ!';
+            document.getElementById('scan-status-text').className = 'text-xs text-emerald-600 font-bold mt-0.5';
+            document.getElementById('couple-form').classList.remove('hidden');
+        }
+
+
+        function generateCoupleCard(e) {
+            e.preventDefault();
+
+            const name1 = document.getElementById('my-name').value.trim();
+            const name2 = document.getElementById('partner-name').value.trim();
+            const dateVal = document.getElementById('date-start').value; // YYYY-MM-DD
+            const timeVal = document.getElementById('time-start').value; // HH:MM
+
+            if (!name1 || !name2 || !dateVal || !timeVal) return;
+
+            const [yyyy, mm, dd] = dateVal.split('-');
+            const [hh, min] = timeVal.split(':');
+
+            // MinHour calculation: Minute first + Hour (e.g., 17:45 -> 45 + 17 -> 4517)
+            const minHour = `${min}${hh}`;
+
+            // Fetch DB to increment counter and handle set overflow A->B->C...
+            const db = EncryptedDB.getDB();
+            let num = db.globalCounter || 1;
+            let setIndex = db.currentSetIndex || 0;
+
+            const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const setChar = alphabet[setIndex % alphabet.length];
+            const numFormatted = String(num).padStart(2, '0');
+
+            // Construct exact spec ID
+            const coupleID = `${dd}${setChar}${mm}${minHour}${yyyy}#${numFormatted}`;
+
+            // Update DB counter state
+            db.globalCounter = num + 1;
+            if (db.globalCounter > 99) {
+                db.globalCounter = 1;
+                db.currentSetIndex = (db.currentSetIndex || 0) + 1;
+            }
+
+            // Create record
+            const newCouple = {
+                id: coupleID,
+                name1: name1,
+                name2: name2,
+                startDate: dateVal,
+                startTime: timeVal,
+                status: 'ACTIVE', // ACTIVE or BROKEN
+                reconcileQuota: 3,
+                createdTime: new Date().toISOString()
+            };
+
+            db.couples.push(newCouple);
+            EncryptedDB.saveDB(db);
+
+            // Display generated card
+            renderCardUI(newCouple);
+            
+            document.getElementById('stage-fingerprint').classList.add('hidden');
+            document.getElementById('stage-card-result').classList.remove('hidden');
+        }
+
+        function renderCardUI(couple) {
+            activeCardData = couple;
+            document.getElementById('card-id-display').innerText = couple.id;
+            document.getElementById('card-name-1').innerText = couple.name1;
+            document.getElementById('card-name-2').innerText = couple.name2;
+            
+            // Format Thai date string
+            const d = new Date(couple.startDate);
+            const thaiMonths = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+            const formattedDate = `${d.getDate()} ${thaiMonths[d.getMonth()]} ${d.getFullYear() + 543}`;
+            
+            document.getElementById('card-date').innerText = formattedDate;
+            document.getElementById('card-time').innerText = `${couple.startTime} น.`;
+
+            const cardElem = document.getElementById('couple-card-element');
+            const badge = document.getElementById('card-status-badge');
+
+            if (couple.status === 'ACTIVE') {
+                cardElem.className = "w-full rounded-3xl p-6 md:p-8 card-gradient-active shadow-2xl relative overflow-hidden transition-all duration-500";
+                badge.className = "inline-block px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-300";
+                badge.innerText = "ไม่มีวันหมดอายุ";
+            } else {
+                cardElem.className = "w-full rounded-3xl p-6 md:p-8 card-gradient-breakup shadow-2xl relative overflow-hidden transition-all duration-500";
+                badge.className = "inline-block px-2.5 py-1 rounded-full text-[10px] font-bold bg-zinc-800 text-zinc-300 border border-zinc-600";
+                badge.innerText = "สิ้นสุดความสัมพันธ์";
+            }
+
+            document.getElementById('reconcile-count-tag').innerText = `โควต้าคืนดีคงเหลือ: ${couple.reconcileQuota}/3`;
+        }
+
+
+        function confirmBreakup() {
+            if (!activeCardData) return;
+
+            const modal = document.getElementById('breakup-modal');
+            modal.classList.remove('hidden');
+
+            document.getElementById('tear-id-1').innerText = activeCardData.id;
+            document.getElementById('tear-id-2').innerText = activeCardData.id;
+
+            // Trigger Tear Animation Timeout
+            setTimeout(() => {
+                document.getElementById('tear-animation-container').classList.add('hidden');
+                const cert = document.getElementById('breakup-certificate');
+                cert.classList.remove('hidden');
+
+                document.getElementById('breakup-cert-id').innerText = `ID: ${activeCardData.id}`;
+                document.getElementById('breakup-date').innerText = new Date().toLocaleDateString('th-TH');
+
+                // Update Status in DB
+                const db = EncryptedDB.getDB();
+                const idx = db.couples.findIndex(c => c.id === activeCardData.id);
+                if (idx !== -1) {
+                    db.couples[idx].status = 'BROKEN';
+                    EncryptedDB.saveDB(db);
+                    activeCardData.status = 'BROKEN';
+                    renderCardUI(activeCardData);
+                }
+            }, 1400);
+        }
+
+        function closeBreakupModal() {
+            document.getElementById('breakup-modal').classList.add('hidden');
+            // Reset modal internal state
+            document.getElementById('tear-animation-container').classList.remove('hidden');
+            document.getElementById('breakup-certificate').classList.add('hidden');
+        }
+
+
+        function performSearch() {
+            const queryId = document.getElementById('search-id-input').value.trim().toUpperCase();
+            const verifyName = document.getElementById('search-name-1').value.trim().toLowerCase();
+            const msgBox = document.getElementById('search-result-msg');
+
+            msgBox.classList.add('hidden');
+
+            if (!queryId || !verifyName) {
+                msgBox.className = "text-xs p-3 rounded-xl bg-amber-100 text-amber-800 block";
+                msgBox.innerText = "กรุณากรอกรหัส ID และชื่อเพื่อยืนยันความเป็นตัวตน";
+                return;
+            }
+
+            const db = EncryptedDB.getDB();
+            const match = db.couples.find(c => c.id.toUpperCase() === queryId);
+
+            if (!match) {
+                msgBox.className = "text-xs p-3 rounded-xl bg-rose-100 text-rose-800 block";
+                msgBox.innerText = "❌ ไม่พบรหัส ID คู่รักนี้ในระบบความลับ";
+                return;
+            }
+
+            // Verify if provided name matches either partner
+            const name1 = match.name1.toLowerCase();
+            const name2 = match.name2.toLowerCase();
+
+            if (verifyName === name1 || verifyName === name2) {
+                msgBox.className = "text-xs p-3 rounded-xl bg-emerald-100 text-emerald-800 block";
+                msgBox.innerText = "✓ ตรวจสอบข้อมูลถูกต้อง! กำลังเปิดหน้าบัตร...";
+
+                setTimeout(() => {
+                    switchTab('proposal');
+                    document.getElementById('stage-proposal').classList.add('hidden');
+                    document.getElementById('stage-card-result').classList.remove('hidden');
+                    renderCardUI(match);
+                }, 800);
+            } else {
+                msgBox.className = "text-xs p-3 rounded-xl bg-rose-100 text-rose-800 block";
+                msgBox.innerText = "🔒 ชื่อไม่ตรงกับข้อมูลในบัตรใบนี้ ไม่สามารถเข้าถึงข้อมูลได้";
+            }
+        }
+
+
+        function handleReconciliation(e) {
+            e.preventDefault();
+            const recId = document.getElementById('reconcile-id').value.trim().toUpperCase();
+            const name1 = document.getElementById('reconcile-name-1').value.trim().toLowerCase();
+            const name2 = document.getElementById('reconcile-name-2').value.trim().toLowerCase();
+            const statusMsg = document.getElementById('reconcile-status-msg');
+
+            const db = EncryptedDB.getDB();
+            const idx = db.couples.findIndex(c => c.id.toUpperCase() === recId);
+
+            if (idx === -1) {
+                statusMsg.className = "text-xs p-3 rounded-xl bg-rose-100 text-rose-800 block";
+                statusMsg.innerText = "❌ ไม่พบข้อมูลรหัส ID นี้ในประวัติระบบ";
+                return;
+            }
+
+            const couple = db.couples[idx];
+
+            // Verify strict names
+            const dbN1 = couple.name1.toLowerCase();
+            const dbN2 = couple.name2.toLowerCase();
+            const isValidCouple = (name1 === dbN1 && name2 === dbN2) || (name1 === dbN2 && name2 === dbN1);
+
+            if (!isValidCouple) {
+                statusMsg.className = "text-xs p-3 rounded-xl bg-rose-100 text-rose-800 block";
+                statusMsg.innerText = "🔒 ชื่อไม่ถูกต้อง ไม่ตรงกับรหัส ID เดิมที่บันทึกไว้";
+                return;
+            }
+
+            if (couple.status !== 'BROKEN') {
+                statusMsg.className = "text-xs p-3 rounded-xl bg-blue-100 text-blue-800 block";
+                statusMsg.innerText = "ℹ️ บัตรใบนี้ยังมีสถานะรักกันอยู่ ไม่จำเป็นต้องขอคืนดี";
+                return;
+            }
+
+            // Quota Check (Max 3)
+            if (couple.reconcileQuota <= 0) {
+                statusMsg.className = "text-xs p-3 rounded-xl bg-rose-900 text-rose-100 font-bold block";
+                statusMsg.innerText = "🚫 หมดสิทธิ์คืนดีแล้ว! คุณใช้โควต้าขอคืนดีครบ 3 ครั้งแล้ว ไม่สามารถออกบัตรใหม่ได้อีก";
+                return;
+            }
+
+            // Deduct Quota & Restore Status
+            couple.reconcileQuota -= 1;
+            couple.status = 'ACTIVE';
+            db.couples[idx] = couple;
+            EncryptedDB.saveDB(db);
+
+            statusMsg.className = "text-xs p-3 rounded-xl bg-emerald-100 text-emerald-800 font-bold block";
+            statusMsg.innerText = `🎉 ขอคืนดีสำเร็จ! ออกบัตรคู่รักใหม่เรียบร้อย (โควต้าคงเหลือ ${couple.reconcileQuota}/3 ครั้ง)`;
+
+            setTimeout(() => {
+                switchTab('proposal');
+                document.getElementById('stage-proposal').classList.add('hidden');
+                document.getElementById('stage-card-result').classList.remove('hidden');
+                renderCardUI(couple);
+            }, 1200);
+        }
+
+
+        function downloadCardSVG() {
+            const cardElem = document.getElementById('couple-card-element');
+            if (typeof html2canvas !== 'undefined') {
+                html2canvas(cardElem, { scale: 2, backgroundColor: null }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = `Couple_ID_${activeCardData ? activeCardData.id : 'Card'}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                });
+            }
+        }
+
+        function shareCard() {
+            if (!activeCardData) return;
+            const textToCopy = `บัตรประจำตัวคู่รักดิจิทัล รหัส ID: ${activeCardData.id} (${activeCardData.name1} ❤️ ${activeCardData.name2})`;
+            
+            // Clipboard fallback as specified
+            const tempInput = document.createElement('textarea');
+            tempInput.value = textToCopy;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            alert("คัดลอกรหัส ID คู่รักไปยังคลิปบอร์ดแล้ว!");
+        }
+    </script>
+</body>
+</html>
